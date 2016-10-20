@@ -40,7 +40,8 @@ public class Main {
 
         try {
             ServerSocket serverSocket = new ServerSocket(9999, 10);
-            System.out.println("ip: " + InetAddress.getLocalHost().getHostAddress() + ":" + serverSocket.getLocalPort());
+            InetAddress address = InetAddress.getLocalHost();
+            System.out.println("ip: " + address.getHostAddress() + ":" + serverSocket.getLocalPort());
             while (true) {
                 System.out.println("Waiting for client ...");
                 final Socket socket = serverSocket.accept();

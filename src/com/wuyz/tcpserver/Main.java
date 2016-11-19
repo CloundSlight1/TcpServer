@@ -2,9 +2,11 @@ package com.wuyz.tcpserver;
 
 import java.io.*;
 import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.security.MessageDigest;
+import java.util.Enumeration;
 import java.util.Locale;
 
 public class Main {
@@ -40,8 +42,24 @@ public class Main {
 
         try {
             ServerSocket serverSocket = new ServerSocket(9999, 10);
-            InetAddress address = InetAddress.getLocalHost();
-            System.out.println("ip: " + address.getHostAddress() + ":" + serverSocket.getLocalPort());
+
+            Enumeration<NetworkInterface> enumeration = NetworkInterface.getNetworkInterfaces();
+            while (enumeration.hasMoreElements()) {
+                NetworkInterface networkInterface = enumeration.nextElement();
+                if (networkInterface.isLoopback() || networkInterface.isVirtual())
+                    continue;
+                Enumeration<InetAddress> inetAddressEnumeration = networkInterface.getInetAddresses();
+
+                if (inetAddressEnumeration.hasMoreElements()) {
+                    InetAddress inetAddress = inetAddressEnumeration.nextElement();
+                    if (inetAddress.isSiteLocalAddress() && inetAddress.getAddress()[3] != 1) {
+                        System.out.println(networkInterface.getDisplayName()
+                                + " " + inetAddress.getHostAddress() + ":" + serverSocket.getLocalPort());
+                        break;
+                    }
+                }
+            }
+
             while (true) {
                 System.out.println("Waiting for client ...");
                 final Socket socket = serverSocket.accept();

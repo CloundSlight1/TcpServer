@@ -5,19 +5,20 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.util.Enumeration;
 import java.util.Locale;
 
 public class Main {
 
-    static final char[] HEX_CHAR = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+    private static final char[] HEX_CHAR = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 
     private static String name;
     private static String sha1;
     private static long length;
 
-    public static void main(final String[] args) {
+    public static void main(final String[] args) throws UnsupportedEncodingException {
         if (args == null || args.length != 1) {
             System.err.println("Usage: ServerTcp file");
             return;
@@ -87,10 +88,10 @@ public class Main {
                                         System.err.println("File not exist: " + args[0]);
                                         return;
                                     }
-                                    buffer = new byte[2048];
-                                    try (FileInputStream fileInputStream = new FileInputStream(file)) {
+                                    buffer = new byte[4096];
+                                    try (BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(file))) {
                                         System.out.println("send file begin");
-                                        while ((n = fileInputStream.read(buffer)) > 0) {
+                                        while ((n = bufferedInputStream.read(buffer)) > 0) {
 //                                            System.out.println("n = " + n);
                                             outputStream.write(buffer, 0, n);
                                         }

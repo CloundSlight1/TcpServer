@@ -5,7 +5,6 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.util.Enumeration;
 import java.util.Locale;
@@ -91,8 +90,15 @@ public class Main {
                                     buffer = new byte[4096];
                                     try (BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(file))) {
                                         System.out.println("send file begin");
+                                        int i = 0;
+                                        int j = 0;
+                                        long count = -1;
                                         while ((n = bufferedInputStream.read(buffer)) > 0) {
-//                                            System.out.println("n = " + n);
+                                            count += n;
+                                            j = i;
+                                            i = (int) (count * 100L / length);
+                                            if (i != j)
+                                                System.out.println(i + "%");
                                             outputStream.write(buffer, 0, n);
                                         }
                                         System.out.println("send file end");

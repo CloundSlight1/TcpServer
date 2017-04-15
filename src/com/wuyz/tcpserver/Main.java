@@ -87,7 +87,7 @@ public class Main {
                                         System.err.println("File not exist: " + args[0]);
                                         return;
                                     }
-                                    buffer = new byte[4096];
+                                    buffer = new byte[4096*5];
                                     try (BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(file))) {
                                         System.out.println("send file begin");
                                         int i = 0;
